@@ -1,7 +1,7 @@
 {
   "name": "demo-dasboard",
   "version": "1.0.0",
-  "description": "Mobile-first GAC impact intelligence dashboard demo with simulated data.",
+  "description": "Mobile-first GAC impact intelligence dashboard.",
   "private": true,
   "scripts": {
     "dev": "next dev",
