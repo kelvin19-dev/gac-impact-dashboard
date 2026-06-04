@@ -41,3 +41,11 @@ next-env.d.ts
 
 # claude code local config
 /.claude/
+
+# planning docs
+/gac_impact_dashboard_prd.md
+/gac_impact_dashboard_design_spec.md
+/gac_dashboard_audit_summary.md
+
+# report artifacts
+/public/reports/
