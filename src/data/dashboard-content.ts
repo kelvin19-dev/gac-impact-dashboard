@@ -126,6 +126,11 @@ export type ReportTemplate = {
     fileName: string;
     sizeLabel: string;
     slideCount: number;
+    pdf: {
+      href: string;
+      fileName: string;
+      sizeLabel: string;
+    };
   };
 };
 
@@ -707,6 +712,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-executive-impact-summary.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-executive-impact-summary.pdf",
+        fileName: "gac-executive-impact-summary.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -720,6 +730,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-donor-funding-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-donor-funding-report.pdf",
+        fileName: "gac-donor-funding-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -733,6 +748,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-county-performance-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-county-performance-report.pdf",
+        fileName: "gac-county-performance-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -746,6 +766,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-project-portfolio-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-project-portfolio-report.pdf",
+        fileName: "gac-project-portfolio-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -759,6 +784,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-loan-portfolio-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-loan-portfolio-report.pdf",
+        fileName: "gac-loan-portfolio-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -772,6 +802,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-member-engagement-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-member-engagement-report.pdf",
+        fileName: "gac-member-engagement-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
   {
@@ -785,6 +820,11 @@ export const reportTemplates: ReportTemplate[] = [
       fileName: "gac-data-quality-report.pptx",
       sizeLabel: "1.9 MB",
       slideCount: 3,
+      pdf: {
+        href: "/reports/gac-data-quality-report.pdf",
+        fileName: "gac-data-quality-report.pdf",
+        sizeLabel: "4 KB",
+      },
     },
   },
 ];

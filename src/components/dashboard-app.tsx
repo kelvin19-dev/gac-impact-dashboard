@@ -784,7 +784,20 @@ function ProjectsView({
           }
         >
           <Download />
-          Download report
+          Report PPTX
+        </Button>
+        <Button
+          variant="outline"
+          className="self-end"
+          render={
+            <a
+              href={projectPortfolioReport.artifact.pdf.href}
+              download={projectPortfolioReport.artifact.pdf.fileName}
+            />
+          }
+        >
+          <Download />
+          Report PDF
         </Button>
       </div>
 
@@ -1157,9 +1170,9 @@ function ReportsView({ onOpenBrief }: { onOpenBrief: () => void }) {
                 ))}
               </div>
               <p className="text-muted-foreground text-xs">
-                {template.artifact.slideCount} slides · {template.artifact.format} · {template.artifact.sizeLabel}
+                {template.artifact.slideCount} slides · {template.artifact.format} {template.artifact.sizeLabel} · PDF {template.artifact.pdf.sizeLabel}
               </p>
-              <div className="mt-auto flex gap-2 pt-1">
+              <div className="mt-auto flex flex-wrap gap-2 pt-1">
                 <Button variant="outline" size="sm" onClick={onOpenBrief}>Preview</Button>
                 <Button
                   variant="ghost"
@@ -1172,7 +1185,20 @@ function ReportsView({ onOpenBrief }: { onOpenBrief: () => void }) {
                   }
                 >
                   <Download />
-                  Download PPTX
+                  PPTX
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  render={
+                    <a
+                      href={template.artifact.pdf.href}
+                      download={template.artifact.pdf.fileName}
+                    />
+                  }
+                >
+                  <Download />
+                  PDF
                 </Button>
               </div>
             </CardContent>
