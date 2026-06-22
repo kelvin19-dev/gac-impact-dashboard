@@ -268,7 +268,7 @@ export function DashboardApp() {
           <div className="flex min-w-0 flex-1 flex-col">
             <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur">
               <div className="flex flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-                <div className="flex items-start gap-3">
+                <div className="flex min-w-0 items-center gap-3 sm:items-start">
                   <Button
                     variant="outline"
                     size="icon"
@@ -278,12 +278,21 @@ export function DashboardApp() {
                   >
                     <Menu />
                   </Button>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <h1 className="text-balance font-heading font-semibold text-xl tracking-[-0.01em] lg:text-2xl">{active.title}</h1>
-                    <p className="mt-0.5 hidden max-w-2xl text-pretty text-muted-foreground text-sm sm:block">{active.description}</p>
+                    <p className="mt-0.5 hidden max-w-2xl text-pretty text-muted-foreground text-sm sm:block lg:hidden 2xl:block">{active.description}</p>
                   </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="sm:hidden"
+                    onClick={openBrief}
+                    aria-label="Board brief"
+                  >
+                    <FileText />
+                  </Button>
                 </div>
-                <div className="flex flex-wrap items-end gap-2">
+                <div className="scrollbar-hidden -mx-4 flex flex-nowrap items-end gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 sm:pb-0">
                   <FilterSelect
                     label="Period"
                     value={filters.period}
@@ -304,7 +313,7 @@ export function DashboardApp() {
                   />
                   <Button
                     onClick={openBrief}
-                    className="self-end border-gold-500 bg-gold-500 text-ink shadow-gold hover:bg-gold-400 data-pressed:bg-gold-600"
+                    className="self-end border-gold-500 bg-gold-500 pl-3.5 pr-3 text-ink shadow-gold hover:bg-gold-400 data-pressed:bg-gold-600 max-sm:hidden"
                   >
                     <FileText />
                     Board brief
@@ -314,13 +323,15 @@ export function DashboardApp() {
             </header>
 
             <main className="min-w-0 px-4 pt-6 pb-12 sm:px-6 lg:px-8">
-              <ViewRouter
-                view={view}
-                data={data}
-                filters={filters}
-                onFilter={updateFilter}
-                onOpenBrief={openBrief}
-              />
+              <div key={view} className="dashboard-view">
+                <ViewRouter
+                  view={view}
+                  data={data}
+                  filters={filters}
+                  onFilter={updateFilter}
+                  onOpenBrief={openBrief}
+                />
+              </div>
             </main>
 
             <footer className="mt-auto border-t px-4 py-4 text-muted-foreground text-xs sm:px-6 lg:px-8">
@@ -389,7 +400,6 @@ function SidebarCollapseButton({
   collapsed: boolean;
   onToggle: () => void;
 }) {
-  const Icon = collapsed ? PanelLeftOpen : PanelLeftClose;
   const label = collapsed ? "Expand sidebar" : "Collapse sidebar";
 
   return (
@@ -405,7 +415,20 @@ function SidebarCollapseButton({
           />
         }
       >
-        <Icon className="size-4" />
+        <span className="relative grid size-4 place-items-center">
+          <PanelLeftOpen
+            className={cn(
+              "absolute size-4 transition-[opacity,filter,scale] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+              collapsed ? "scale-100 opacity-100 blur-0" : "scale-[0.25] opacity-0 blur-[4px]",
+            )}
+          />
+          <PanelLeftClose
+            className={cn(
+              "size-4 transition-[opacity,filter,scale] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+              collapsed ? "scale-[0.25] opacity-0 blur-[4px]" : "scale-100 opacity-100 blur-0",
+            )}
+          />
+        </span>
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>
@@ -434,7 +457,7 @@ function NavList({
             aria-current={isActive ? "page" : undefined}
             aria-label={collapsed ? item.label : undefined}
             className={cn(
-              "group relative flex h-9 items-center rounded-lg text-left text-sm outline-none transition-[background-color,color,box-shadow] focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
+              "group relative flex h-10 items-center rounded-lg text-left text-sm outline-none transition-[background-color,color,box-shadow,scale] duration-150 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
               collapsed ? "justify-center px-0" : "gap-3 px-3",
               isActive
                 ? "bg-white/10 font-medium text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
@@ -504,7 +527,7 @@ function OverviewView({ data }: { data: DashboardData }) {
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 min-[360px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
         <KpiCard
           accent
           icon={Users}
@@ -1353,7 +1376,7 @@ function InfoDot({ text, label }: { text: string; label: string }) {
           <button
             type="button"
             aria-label={`${label} definition`}
-            className="relative grid size-4 place-items-center rounded-sm text-muted-foreground transition-colors after:absolute after:size-8 after:content-[''] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card pointer-coarse:after:size-11"
+            className="relative grid size-4 place-items-center rounded-sm text-muted-foreground transition-colors after:absolute after:size-10 after:content-[''] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card pointer-coarse:after:size-11"
           />
         }
       >
@@ -1390,7 +1413,7 @@ function ChartCard({
   className?: string;
 }) {
   return (
-    <Card className={cn("flex flex-col", className)}>
+    <Card className={cn("min-w-0 flex-col", className)}>
       <div className="flex flex-col gap-0.5 p-5 pb-2">
         <h3 className="font-semibold text-sm">{title}</h3>
         {description && <p className="text-muted-foreground text-sm">{description}</p>}
@@ -1536,7 +1559,7 @@ function SearchInput({
       value={value}
       onChange={(event) => onChange(event.target.value)}
       placeholder={placeholder}
-      className="h-8 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs/5 outline-none ring-ring/24 transition-shadow placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] sm:w-48"
+      className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs/5 outline-none ring-ring/24 transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] sm:w-48"
     />
   );
 }
@@ -1553,10 +1576,10 @@ function FilterSelect({
   onValueChange: (value: string) => void;
 }) {
   return (
-    <div className="grid gap-1">
-      {label && <span className="font-medium text-muted-foreground text-xs">{label}</span>}
+    <div className="grid shrink-0 gap-1">
+      {label && <span className="dashboard-filter-label font-medium text-muted-foreground text-xs">{label}</span>}
       <Select items={options} value={value} onValueChange={(next) => next != null && onValueChange(String(next))}>
-        <SelectTrigger className="h-8 min-w-36">
+        <SelectTrigger aria-label={label} className="h-10 min-w-36 sm:h-8">
           <SelectValue />
         </SelectTrigger>
         <SelectPopup>
@@ -1803,7 +1826,7 @@ function ResponsiveChart({ height = 300, children }: { height?: number; children
   const { ref, width } = useChartWidth(ready);
 
   return (
-    <div ref={ref} className="w-full" style={{ height }}>
+    <div ref={ref} className="min-w-0 w-full overflow-hidden" style={{ height }}>
       {ready && width ? children(width) : <ChartSkeleton height={height} />}
     </div>
   );

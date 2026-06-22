@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable, interHeading.variable, geistMono.variable)}>
+    <html lang="en" className={cn("font-sans antialiased", inter.variable, interHeading.variable, geistMono.variable)}>
       <body>{children}</body>
     </html>
   );
