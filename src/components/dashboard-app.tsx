@@ -58,6 +58,7 @@ import {
   type PeriodValue,
   type RegionValue,
 } from "@/data/dashboard-content";
+import { kenyaCountyShapes } from "@/data/kenya-map";
 import {
   formatCompact,
   formatCurrency,
@@ -277,9 +278,9 @@ export function DashboardApp() {
                   >
                     <Menu />
                   </Button>
-                  <div>
-                    <h1 className="font-heading font-semibold text-xl tracking-[-0.01em]">{active.title}</h1>
-                    <p className="mt-0.5 hidden text-muted-foreground text-sm sm:block">{active.description}</p>
+                  <div className="min-w-0">
+                    <h1 className="text-balance font-heading font-semibold text-xl tracking-[-0.01em] lg:text-2xl">{active.title}</h1>
+                    <p className="mt-0.5 hidden max-w-2xl text-pretty text-muted-foreground text-sm sm:block">{active.description}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-end gap-2">
@@ -301,7 +302,10 @@ export function DashboardApp() {
                     options={getCountyOptions(filters.region).map((county) => ({ label: county, value: county }))}
                     onValueChange={(value) => updateFilter("country", value)}
                   />
-                  <Button onClick={openBrief} className="self-end">
+                  <Button
+                    onClick={openBrief}
+                    className="self-end border-gold-500 bg-gold-500 text-ink shadow-gold hover:bg-gold-400 data-pressed:bg-gold-600"
+                  >
                     <FileText />
                     Board brief
                   </Button>
@@ -430,18 +434,14 @@ function NavList({
             aria-current={isActive ? "page" : undefined}
             aria-label={collapsed ? item.label : undefined}
             className={cn(
-              "group relative flex h-9 items-center rounded-lg text-left text-sm transition-colors",
+              "group relative flex h-9 items-center rounded-lg text-left text-sm outline-none transition-[background-color,color,box-shadow] focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
               collapsed ? "justify-center px-0" : "gap-3 px-3",
-              isActive ? "bg-white/10 font-medium text-white" : "text-white/65 hover:bg-white/5 hover:text-white",
+              isActive
+                ? "bg-white/10 font-medium text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
+                : "text-white/65 hover:bg-white/5 hover:text-white",
             )}
           >
-            <span
-              className={cn(
-                "absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-gold-500 transition-opacity",
-                isActive ? "opacity-100" : "opacity-0",
-              )}
-            />
-            <Icon className="size-4.5 shrink-0 opacity-90" />
+            <Icon className={cn("size-4.5 shrink-0", isActive ? "text-gold-400" : "opacity-80")} />
             {collapsed ? <span className="sr-only">{item.label}</span> : item.label}
           </button>
         );
@@ -504,7 +504,7 @@ function OverviewView({ data }: { data: DashboardData }) {
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <KpiCard
           accent
           icon={Users}
@@ -574,7 +574,7 @@ function OverviewView({ data }: { data: DashboardData }) {
         <div className="flex flex-col gap-0.5 p-5 pb-3">
           <h3 className="font-semibold text-sm">County operating picture</h3>
           <p className="text-muted-foreground text-sm">
-            Activity concentration by county; bubble size reflects people reached.
+            County reach across Kenya; deeper colour reflects more people reached.
           </p>
         </div>
         <div className="grid gap-6 px-5 pb-5 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -637,7 +637,7 @@ function NetworkView({
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 xl:grid-cols-4">
         <KpiCard icon={Users} label="Member organizations" value={formatNumber(s.memberOrganizations)} detail={`${formatNumber(s.countriesRepresented)} counties`} />
         <KpiCard icon={Activity} label="Active CBOs" value={formatNumber(s.activeCbos)} detail={`${formatNumber(s.newMembers)} new this period`} />
         <KpiCard icon={CircleAlert} label="Dormant members" value={formatNumber(s.dormantMembers)} detail="re-engagement candidates" tone="warning" />
@@ -801,7 +801,7 @@ function ProjectsView({
         </Button>
       </div>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           icon={Target}
           label="Active projects"
@@ -947,7 +947,7 @@ function FundingView({
         />
       </div>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 xl:grid-cols-4">
         <KpiCard icon={HandCoins} label="Grants awarded" value={formatCurrency(s.grantsAwarded)} detail={`${formatNumber(s.grantRecipients)} recipients`} />
         <KpiCard icon={Target} label="Avg grant size" value={formatCurrency(s.averageGrantSize)} detail={`${formatCurrency(s.grantsDisbursed)} disbursed`} />
         <KpiCard icon={Landmark} label="Loans disbursed" value={formatCurrency(s.loansDisbursed)} detail={`${formatCurrency(s.loanRepayments)} repaid`} />
@@ -1011,7 +1011,7 @@ function ImpactView({ data }: { data: DashboardData }) {
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <KpiCard accent icon={Users} label="People reached" value={formatCompact(s.peopleReached)} tooltip={metricDefinitions.peopleReached} />
         <KpiCard icon={Activity} label="Households" value={formatCompact(s.householdsReached)} />
         <KpiCard icon={Users} label="Women reached" value={formatCompact(s.womenReached)} />
@@ -1076,7 +1076,7 @@ function RegionsView({ data }: { data: DashboardData }) {
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 min-[360px]:grid-cols-2 xl:grid-cols-4">
         <KpiCard icon={Globe2} label="Counties active" value={formatNumber(data.summary.activeCountries)} detail={`${formatNumber(regions.length)} regions`} />
         <KpiCard icon={Users} label="Top region by reach" value={leader?.region ?? "—"} detail={leader ? `${formatCompact(leader.peopleReached)} people` : "no activity"} />
         <KpiCard icon={HandCoins} label="Funds deployed" value={formatCurrency(data.summary.grantsDisbursed + data.summary.loansDisbursed)} detail="grants + loans" />
@@ -1299,7 +1299,7 @@ function KpiCard({
   return (
     <Card className={cn("relative overflow-hidden", accent && "ring-1 ring-gold-200")}>
       {accent && <span className="absolute inset-x-0 top-0 h-0.5 bg-[linear-gradient(90deg,var(--color-gold-500),var(--color-gold-700))]" />}
-      <div className="flex flex-col gap-3 p-5">
+      <div className="flex flex-col gap-3 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <span
             className={cn(
@@ -1313,7 +1313,7 @@ function KpiCard({
         </div>
         <div>
           <p className="text-muted-foreground text-sm">{label}</p>
-          <p className="mt-1 font-heading font-semibold text-3xl tabular-nums tracking-[-0.02em]">{value}</p>
+          <p className="mt-1 font-heading font-semibold text-2xl tabular-nums tracking-[-0.02em] sm:text-3xl">{value}</p>
         </div>
         {(delta || detail) && (
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -1353,7 +1353,7 @@ function InfoDot({ text, label }: { text: string; label: string }) {
           <button
             type="button"
             aria-label={`${label} definition`}
-            className="text-muted-foreground/70 transition-colors hover:text-foreground"
+            className="relative grid size-4 place-items-center rounded-sm text-muted-foreground transition-colors after:absolute after:size-8 after:content-[''] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card pointer-coarse:after:size-11"
           />
         }
       >
@@ -1536,7 +1536,7 @@ function SearchInput({
       value={value}
       onChange={(event) => onChange(event.target.value)}
       placeholder={placeholder}
-      className="h-8 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs/5 outline-none ring-ring/24 transition-shadow placeholder:text-muted-foreground/72 focus-visible:border-ring focus-visible:ring-[3px] sm:w-48"
+      className="h-8 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs/5 outline-none ring-ring/24 transition-shadow placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] sm:w-48"
     />
   );
 }
@@ -1673,47 +1673,97 @@ function ImpactMap({ data }: { data: DashboardData }) {
   const points = data.mapPoints;
   const maxPeople = Math.max(1, ...points.map((point) => point.peopleReached));
   const top = points.slice().sort((a, b) => b.peopleReached - a.peopleReached)[0];
-  const bounds = { minLon: 33.4, maxLon: 41.9, minLat: -4.8, maxLat: 4.6 };
+  const pointsByCounty = new Map(points.map((point) => [normalizeCountyName(point.country), point]));
+  const projectPoint = (lon: number, lat: number) => ({
+    x: 80 + ((lon - 33.75) / (41.95 - 33.75)) * 330,
+    y: 12 + ((5.05 - lat) / (5.05 - -4.75)) * 372,
+  });
+  const topPoint = top ? projectPoint(top.lon, top.lat) : null;
 
   return (
-    <div className="relative min-h-[300px] overflow-hidden rounded-xl border bg-[linear-gradient(180deg,#ffffff,#f4eee3)]">
-      <svg className="absolute inset-0 size-full" viewBox="0 0 100 68" role="img" aria-label="Kenya county reach map">
-        <path
-          d="M35 4 50 6 64 16 73 28 69 40 80 49 63 61 46 65 32 58 20 44 15 29 24 15Z"
-          fill="var(--secondary)"
-          stroke="var(--border)"
-          strokeWidth="0.45"
-        />
-        <path d="M35 4 38 23 31 38 32 58" fill="none" stroke="var(--border)" strokeWidth="0.35" opacity="0.8" />
-        <path d="M24 15 43 28 64 16" fill="none" stroke="var(--border)" strokeWidth="0.35" opacity="0.8" />
-        <path d="M31 38 52 39 69 40" fill="none" stroke="var(--border)" strokeWidth="0.35" opacity="0.8" />
-        <path d="M46 65 52 39 80 49" fill="none" stroke="var(--border)" strokeWidth="0.35" opacity="0.8" />
-        {points.map((point) => {
-          const cx = ((point.lon - bounds.minLon) / (bounds.maxLon - bounds.minLon)) * 72 + 14;
-          const cy = ((bounds.maxLat - point.lat) / (bounds.maxLat - bounds.minLat)) * 58 + 5;
-          const radius = 1.4 + Math.sqrt(point.peopleReached / maxPeople) * 5.8;
-          const isTop = top && point.country === top.country;
-          return (
-            <circle
-              key={point.country}
-              cx={cx}
-              cy={cy}
-              r={radius}
-              fill={isTop ? "var(--chart-2)" : "var(--chart-1)"}
-              opacity={isTop ? 0.85 : 0.62}
-              stroke="var(--card)"
-              strokeWidth={0.4}
-              aria-label={`${point.country}, ${formatCompact(point.peopleReached)} people reached`}
-            />
-          );
-        })}
-      </svg>
-      <div className="absolute bottom-3 left-3 rounded-lg border bg-background/92 px-3 py-2 text-xs shadow-xs backdrop-blur">
-        <p className="font-medium">{formatNumber(data.summary.activeCountries)} active counties</p>
-        <p className="text-muted-foreground">{formatCompact(data.summary.peopleReached)} people reached</p>
+    <div className="overflow-hidden rounded-xl border bg-royal-50/55 dark:bg-royal-950/35">
+      <div className="relative min-h-[310px] sm:min-h-[360px]">
+        <svg
+          className="absolute inset-0 size-full"
+          viewBox="0 0 520 396"
+          role="img"
+          aria-labelledby="county-map-title county-map-description"
+        >
+          <title id="county-map-title">People reached by county in Kenya</title>
+          <desc id="county-map-description">
+            A map of Kenya's 47 counties. Active counties are shaded from light to deep purple based on people reached.
+          </desc>
+          <g className="drop-shadow-[0_10px_18px_rgba(36,16,67,0.08)]">
+            {kenyaCountyShapes.map((county) => {
+              const point = pointsByCounty.get(normalizeCountyName(county.name));
+              const isTopCounty = Boolean(top && point && point.country === top.country);
+              const label = point
+                ? `${county.name}: ${formatCompact(point.peopleReached)} people reached`
+                : `${county.name}: no activity in this view`;
+
+              return (
+                <path
+                  key={county.name}
+                  d={county.path}
+                  fill={countyReachFill(point?.peopleReached ?? 0, maxPeople)}
+                  stroke="var(--card)"
+                  strokeWidth={isTopCounty ? 1.5 : 0.8}
+                  vectorEffect="non-scaling-stroke"
+                  aria-label={label}
+                  tabIndex={point ? 0 : -1}
+                  className="outline-none transition-[fill,opacity] duration-200 focus:opacity-80"
+                >
+                  <title>{label}</title>
+                </path>
+              );
+            })}
+          </g>
+          {top && topPoint && (
+            <g aria-hidden="true">
+              <circle cx={topPoint.x} cy={topPoint.y} r="10" fill="var(--chart-2)" opacity="0.18" />
+              <circle cx={topPoint.x} cy={topPoint.y} r="4.5" fill="var(--chart-2)" stroke="var(--card)" strokeWidth="2" />
+              <path
+                d={`M ${topPoint.x + 7} ${topPoint.y - 5} L ${topPoint.x + 25} ${topPoint.y - 17}`}
+                fill="none"
+                stroke="var(--chart-2)"
+                strokeWidth="1.5"
+              />
+              <text x={topPoint.x + 29} y={topPoint.y - 20} fill="var(--foreground)" fontSize="12" fontWeight="650">
+                {top.country}
+              </text>
+              <text x={topPoint.x + 29} y={topPoint.y - 6} fill="var(--muted-foreground)" fontSize="11">
+                {formatCompact(top.peopleReached)} reached
+              </text>
+            </g>
+          )}
+        </svg>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t bg-card/80 px-4 py-3 text-xs backdrop-blur-sm">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <span>Lower reach</span>
+          <span className="h-2.5 w-8 rounded-sm bg-royal-200" />
+          <span className="h-2.5 w-8 rounded-sm bg-royal-400" />
+          <span className="h-2.5 w-8 rounded-sm bg-royal-800" />
+          <span>Higher reach</span>
+        </div>
+        <p className="font-medium text-foreground">
+          {formatNumber(data.summary.activeCountries)} active counties · {formatCompact(data.summary.peopleReached)} people
+        </p>
       </div>
     </div>
   );
+}
+
+function normalizeCountyName(name: string) {
+  return name.toLowerCase().replace(/[^a-z]/g, "");
+}
+
+function countyReachFill(peopleReached: number, maxPeople: number) {
+  if (peopleReached <= 0) return "var(--secondary)";
+  const ratio = peopleReached / maxPeople;
+  if (ratio >= 0.72) return "var(--color-royal-800)";
+  if (ratio >= 0.42) return "var(--color-royal-500)";
+  return "var(--color-royal-300)";
 }
 
 function TopCounties({ data }: { data: DashboardData }) {
@@ -1737,7 +1787,10 @@ function TopCounties({ data }: { data: DashboardData }) {
             <span className="text-muted-foreground tabular-nums">{formatCompact(county.peopleReached)}</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${(county.peopleReached / max) * 100}%` }} />
+            <div
+              className={cn("h-full rounded-full", index === 0 ? "bg-gold-500" : "bg-primary")}
+              style={{ width: `${(county.peopleReached / max) * 100}%` }}
+            />
           </div>
         </div>
       ))}
